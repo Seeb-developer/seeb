@@ -1,0 +1,71 @@
+name: OTA Deploy - Seeb App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      API_URL: ${{ secrets.API_URL }}
+      CHAT_GPT_API_KEY: ${{ secrets.CHAT_GPT_API_KEY }}
+      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+      FTP_HOST: ${{ secrets.FTP_HOST }}
+      FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+      FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Install dependencies
+        run: npm i --force
+        
+      - name: Export Android bundle
+        run: |
+          mkdir -p android/output
+          npm run export-android
+
+      - name: Export iOS bundle
+        run: |
+          mkdir -p ios/output
+          npm run export-ios
+
+      - name: Download existing update.json
+        run: |
+          curl -s https://app.seeb.in/seeb/update.json -o update.json || echo '{"version": "1.0"}' > update.json
+
+      - name: Bump version and update metadata
+        run: |
+          CURRENT_VERSION=$(jq -r '.version' update.json)
+          if [[ "$CURRENT_VERSION" =~ ^[0-9]+\.[0-9]+$ ]]; then
+            MAJOR=$(echo $CURRENT_VERSION | cut -d. -f1)
+            MINOR=$(echo $CURRENT_VERSION | cut -d. -f2)
+            NEW_VERSION="$MAJOR.$((MINOR + 1))"
+          else
+            NEW_VERSION="1.0"
+          fi
+
+          echo "🔁 Bumped version: $NEW_VERSION"
+
+          echo "{
+            \"version\": \"$NEW_VERSION\",
+            \"url_android\": \"https://app.seeb.in/seeb/index.android.bundle.zip\",
+            \"url_ios\": \"https://app.seeb.in/seeb/main.jsbundle.zip\"
+          }" > update.json
+
+      - name: Upload bundles and update.json to FTP
+        uses: sebastianpopp/ftp-action@v2.0.0
+        with:
+          host: ${{ secrets.FTP_HOST }}
+          user: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          localDir: .
+          remoteDir: /public_html/seeb
+          options: "--exclude .git* --exclude node_modules"
