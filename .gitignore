@@ -78,3 +78,5 @@ yarn-error.log
 .env
 seeb
 seeb-release
+android/app/src/main/assets/index.android.bundle
+

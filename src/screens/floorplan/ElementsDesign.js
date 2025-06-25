@@ -31,7 +31,7 @@ const CARD = '#f9fafb';         // Card background
 const BORDER = '#e0e7ef';       // Subtle border
 const TEXT = '#1e293b';         // Dark blue-gray text
 
-const LEONARDO_API_KEY = '0be138cc-f4f4-45be-aa16-db45d1af6ae3';
+// const LEONARDO_API_KEY = '0be138cc-f4f4-45be-aa16-db45d1af6ae3';
 
 const ElementsDesign = ({ route, navigation }) => {
     const { elements = [], floorPlanImage, width, height, name } = route.params;
@@ -141,9 +141,19 @@ const ElementsDesign = ({ route, navigation }) => {
                 if (!imageUrls.length) throw new Error("No final room image generated.");
                 setDesigns((prev) => ({ ...prev, [itemName]: imageUrls }));
             } else if (res.status === 403) {
-                Alert.alert("Error", "You have reached the maximum number of requests. Please try again later.");
+                Alert.alert("Error", res.message || "You have reached the maximum number of requests. Please try again later.");
+            }
+            else if (res.status === 500) {
+                Alert.alert("Error", "Server error occurred. Please try again later.");
+                if (res.error.status === 429) {
+                    Alert.alert("Error", "Currently server is busy. Please try again later.");
+                }
+            }
+            else {
+                Alert.alert("Error", res.message || "Failed to generate images.");
             }
         } catch (err) {
+            Alert.alert("Error", err.message || "Failed to generate images.");
             console.error(err);
         } finally {
             setLoadingId(null);
@@ -246,7 +256,7 @@ const ElementsDesign = ({ route, navigation }) => {
                 if (!imageUrls.length) throw new Error("No final room image generated.");
                 setDesigns((prev) => ({ ...prev, ["finalroom"]: imageUrls }));
             } else if (res.status === 403) {
-                Alert.alert("Error", "You have reached the maximum number of requests. Please try again later.");
+                Alert.alert("Error", res.message || "You have reached the maximum number of requests. Please try again later.");
             } else {
                 Alert.alert("Error", res.message || "Failed to generate images.");
             }

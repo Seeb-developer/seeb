@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
@@ -8,12 +8,14 @@ import { ModalInfo } from '../../component/model/ModalInfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NavBar from '../../component/header/NavBar';
 import { Top } from '../../utils/constent';
+import DeviceInfo from 'react-native-device-info';
 
 const Profile = () => {
     const navigation = useNavigation();
     const user = useContext(UserContext);
     const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
+    const [appVersion, setAppVersion] = useState('');
 
     const handleLogout = async () => {
         setLoading(true);
@@ -33,7 +35,7 @@ const Profile = () => {
     const menuItems = [
         { title: 'Bookings', icon: 'shopping-cart', navigateTo: 'Bookings' },
         { title: 'My Cart', icon: 'shopping-bag', navigateTo: 'Cart' },
-        { title : 'Saved Floor Plans', icon: 'save', navigateTo: 'SavedFloorPlans' },
+        { title: 'Saved Floor Plans', icon: 'save', navigateTo: 'SavedFloorPlans' },
         // { title: 'Projects', icon: 'layout', navigateTo: 'Projects' },
         { title: 'Profile Settings', icon: 'user', navigateTo: 'ProfileSettings' },
         { title: 'Refer & Earn', icon: 'gift', navigateTo: 'ReferEarn' },
@@ -42,9 +44,16 @@ const Profile = () => {
         { title: 'Terms & Policies', icon: 'file-text', navigateTo: 'PoliciesLegal' },
     ];
 
+    useEffect(() => {
+        const fetchVersion = async () => {
+            const version = DeviceInfo.getVersion(); // e.g. "1.3"
+            setAppVersion(version);
+        };
+
+        fetchVersion();
+    }, []);
 
 
-    const appVersion = '1.0.0';
 
     return (
         <View style={styles.container}>
@@ -114,10 +123,10 @@ const Profile = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { 
-        flex: 1, 
+    container: {
+        flex: 1,
         backgroundColor: '#f7f8fa',
-        paddingTop:Top
+        paddingTop: Top
     },
     profileHeader: {
         flexDirection: 'row',

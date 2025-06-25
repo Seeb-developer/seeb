@@ -12,6 +12,7 @@ import { CartContext } from './src/hooks/context/CartContext'
 import { apiRequest } from './src/utils/api'; // ✅ Ensure you import apiRequest
 import ReactNativeBlobUtil from 'react-native-blob-util';
 import hotUpdate from 'react-native-ota-hot-update';
+import DeviceInfo from 'react-native-device-info'
 
 const App = () => {
   const [username, setUserName] = useState('');
@@ -87,16 +88,16 @@ const App = () => {
     const checkVersion = async () => {
       try {
         setChecking(true);
-        const localVersion = await hotUpdate.getCurrentVersion();
-        setCurrentVersion(localVersion);
+         const version = DeviceInfo.getVersion();
+        setCurrentVersion(version);
 
-        const res = await fetch('https://backend.seeb.in/ota/update.json');
+        const res = await fetch('https://app.seeb.in/seeb/update.json');
         const data = await res.json();
 
         const url =
           Platform.OS === 'android'
-            ? data.downloadAndroidUrl
-            : data.downloadIosUrl;
+            ? data.url_android
+            : data.url_ios;
 
         setRemoteVersion(data.version);
 
@@ -157,14 +158,21 @@ const App = () => {
                 <Modal visible={showUpdateModal} transparent animationType="slide">
                   <View style={styles.modalBackdrop}>
                     <View style={styles.modalContent}>
+                      {/* Close Button */}
+                      <TouchableOpacity onPress={() => setShowUpdateModal(false)} style={styles.closeButton}>
+                        <Text style={styles.closeButtonText}>×</Text>
+                      </TouchableOpacity>
+
                       <Text style={styles.modalTitle}>New Update Available</Text>
                       <Text style={styles.modalText}>Current: {currentVersion} → New: {remoteVersion}</Text>
+
                       <TouchableOpacity onPress={installUpdate} style={styles.updateBtn}>
                         <Text style={styles.updateBtnText}>Install Update</Text>
                       </TouchableOpacity>
                     </View>
                   </View>
                 </Modal>
+
 
               </CartContext.Provider>
             </UserContext.Provider>
@@ -223,6 +231,16 @@ const styles = StyleSheet.create({
   updateBtnText: {
     color: '#fff',
     fontWeight: 'bold',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 5,
+    right: 15,
+    zIndex: 1,
+  },
+  closeButtonText: {
+    fontSize: 24,
+    color: 'red',
   },
 })
 

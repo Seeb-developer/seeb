@@ -117,7 +117,7 @@ const HomeMain = ({ navigation }) => {
                     {/* <Image source={require('../asset/web-1.jpg')} style={styles.aiImage} resizeMode="cover" /> */}
                     <View style={styles.aiOverlay}>
                         <Image source={require('../asset/ai.png')} style={{ width: 100, height: 100 }} resizeMode='contain' />
-                        <Text style={styles.aiTitle}>Design Smarter - Free Room Design with SEEB.</Text>
+                        <Text style={styles.aiTitle}>Design Smarter - Free Room Design With SEEB.</Text>
                         <Text style={styles.aiSubtitle}>
                             Instantly generate design ideas for your home, office, sofa and more with AI-powered creativity.
                         </Text>
@@ -133,9 +133,9 @@ const HomeMain = ({ navigation }) => {
                     {/* <Image source={require('../asset/web-2.jpg')} style={styles.aiImage} resizeMode="cover" /> */}
                     <View style={styles.aiOverlay}>
                         <Image source={require('../asset/floorplan.png')} style={{ width: 100, height: 100 }} resizeMode='contain' />
-                        <Text style={styles.aiTitle}>Create a Free Floor Plan - Design Smarter, Spend Smarter</Text>
+                        <Text style={styles.aiTitle}>Create A Free Floor Plan - Design Smarter, Spend Smarter</Text>
                         <Text style={styles.aiSubtitle}>
-                            Draw floor plans for any Space. Enter dimensions and customize every space with easily.
+                            Draw floor plans for any space. Enter dimensions and customize every space with ease.
                         </Text>
                         <TouchableOpacity
                             style={{ backgroundColor: '#FACC15', padding: 10, borderRadius: 15, marginTop: 10 }}

@@ -5,8 +5,8 @@ import PushNotification from "react-native-push-notification";
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import { check, request, PERMISSIONS, RESULTS } from "react-native-permissions";
 import Geolocation from 'react-native-geolocation-service';
+import { GOOGLE_API_KEY } from '@env';
 
-const GOOGLE_API_KEY = "AIzaSyCL4WKtPMGh93MPjMLRB4sqaKsEH29AwdI";
 
 export async function requestUserPermission() {
     const authStatus = await messaging().requestPermission();

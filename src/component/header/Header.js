@@ -5,16 +5,17 @@ import Geolocation from 'react-native-geolocation-service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from "@react-navigation/native";
 import { width } from '../../utils/constent';
+import { GOOGLE_API_KEY } from '@env';
 
 const Header = () => {
     const navigation = useNavigation();
     const [location, setLocation] = useState('Fetching location...');
 
     useEffect(() => {
-        fetchStoredLocation();
+        // fetchStoredLocation();
     }, []);
 
-    const GOOGLE_API_KEY = "AIzaSyCYK4B04-8nBNtHhcmvxiy2uHx5vDK1vYI"; // Replace with actual API Key
+
 
     const fetchStoredLocation = async () => {
         try {
@@ -68,24 +69,27 @@ const Header = () => {
 
     return (
         <View style={styles.container}>
-            <FastImage
-                source={require('../../asset/logo.png')}
-                style={styles.logo}
-                resizeMode={FastImage.resizeMode.contain}
-            />
-            {/* <TouchableOpacity >
+            <View style={{ flexDirection: "row", alignItems: 'center' }}>
+                <FastImage
+                    source={require('../../asset/logo.png')}
+                    style={styles.logo}
+                    resizeMode={FastImage.resizeMode.contain}
+                />
+                {/* <TouchableOpacity >
                 <Text style={styles.logotext}>SEEB</Text>
-            </TouchableOpacity> */}
-            <TouchableOpacity onPress={() => navigation.navigate('LocationScreen')}>
-                <Text style={styles.locationText}>{location}</Text>
-            </TouchableOpacity>
+                </TouchableOpacity> */}
+                <TouchableOpacity onPress={() => navigation.navigate('LocationScreen')}>
+                    <Text style={styles.locationText}>Pune Maharashtra</Text>
+                </TouchableOpacity>
+            </View>
+            <Text style={styles.logotext}>Designing Dreams, Crafting Space.</Text>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        flexDirection: 'row',
+        // flexDirection: 'row',
         backgroundColor: '#000',
         paddingBottom: 10,
         shadowColor: '#000',
@@ -94,8 +98,8 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         paddingHorizontal: 10,
         // marginBottom: 10,
-        alignItems: 'center',
-        paddingTop: Platform.OS === 'ios' ? 50 : 10, // Adjust for iOS notchApp
+        // alignItems: 'center',
+        paddingTop: Platform.OS === 'ios' ? 40 : 10, // Adjust for iOS notchApp
     },
     logo: {
         width: width * 0.3,
@@ -103,16 +107,17 @@ const styles = StyleSheet.create({
         marginLeft: 10,
     },
     logotext: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#fff',
-    },
-    locationText: {
-        marginLeft: width * 0.04,
         fontSize: 10,
         fontWeight: 'bold',
         color: '#fff',
-        
+        marginLeft: 10,
+    },
+    locationText: {
+        marginLeft: width * 0.04,
+        fontSize: 12,
+        fontWeight: 'bold',
+        color: '#fff',
+
     },
 });
 
