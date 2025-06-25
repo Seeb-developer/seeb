@@ -9,8 +9,8 @@
     "start": "react-native start",
     "test": "jest",
     "codegen": "react-native-codegen",
-    "export-android": "mkdir -p android/output && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/output/index.android.bundle --assets-dest android/output && cd android && zip -r index.android.bundle.zip output && cd .. && rm -rf android/output",
-    "export-ios": "mkdir -p ios/output && react-native bundle --platform ios --dev false --entry-file index.js --bundle-output ios/output/main.jsbundle --assets-dest ios/output && cd ios && zip -r main.jsbundle.zip output && cd .. && rm -rf ios/output"
+    "export-android": "mkdir -p android/output && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/output/index.android.bundle --assets-dest android/output && cd android/output && zip -r ../../index.android.bundle.zip . && cd ../.. && rm -rf android/output",
+    "export-ios": "mkdir -p ios/output && react-native bundle --platform ios --dev false --entry-file index.js --bundle-output ios/output/main.jsbundle --assets-dest ios/output && cd ios/output && zip -r ../../main.jsbundle.zip . && cd ../.. && rm -rf ios/output"
   },
   "dependencies": {
     "@google/genai": "^1.4.0",
