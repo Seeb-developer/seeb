@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyChX4oXe0upIF5vJl41BDL8XRT7rsgcC7M</string>
+	<key>GCM_SENDER_ID</key>
+	<string>700320378270</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>org.seeb</string>
+	<key>PROJECT_ID</key>
+	<string>seeb-e3cea</string>
+	<key>STORAGE_BUCKET</key>
+	<string>seeb-e3cea.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:700320378270:ios:1ea34d7964631cf7ce7a8f</string>
+	<key>DATABASE_URL</key>
+	<string>https://seeb-e3cea-default-rtdb.asia-southeast1.firebasedatabase.app</string>
+</dict>
+</plist>
