@@ -1,9 +1,6 @@
 name: OTA Deploy - Seeb App
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch: 
 
 jobs:
