@@ -74,4 +74,4 @@ jobs:
           user: ${{ env.FTP_USERNAME }}
           password: ${{ env.FTP_PASSWORD }}
           localDir: upload
-          remoteDir: /seeb
+          remoteDir: /public_html/seeb
