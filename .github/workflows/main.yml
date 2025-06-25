@@ -60,12 +60,18 @@ jobs:
             \"url_ios\": \"https://app.seeb.in/seeb/main.jsbundle.zip\"
           }" > update.json
 
-      - name: Upload bundles and update.json to FTP
+      - name: Prepare upload folder
+        run: |
+          mkdir upload
+          mv android/index.android.bundle.zip upload/
+          mv ios/main.jsbundle.zip upload/
+          mv update.json upload/
+
+      - name: Upload only OTA files via FTP
         uses: sebastianpopp/ftp-action@v2.0.0
         with:
-          host: ${{ secrets.FTP_HOST }}
-          user: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          localDir: .
-          remoteDir: /public_html/seeb
-          options: "--exclude .git* --exclude node_modules"
+          host: ${{ env.FTP_HOST }}
+          user: ${{ env.FTP_USERNAME }}
+          password: ${{ env.FTP_PASSWORD }}
+          localDir: upload
+          remoteDir: /seeb
