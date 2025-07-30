@@ -1,9 +1,9 @@
-import { View, Text, StatusBar, StyleSheet, LogBox, Platform, Alert, Modal, TouchableOpacity } from 'react-native'
+import { View, Text, StatusBar, StyleSheet, LogBox, Platform, Alert, Modal, TouchableOpacity, AppState } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import { UserContext } from './src/hooks/context/UserContext'
 import { AppNavigater } from './src/navigation'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { NotificationListener, requestLocationPermission, requestUserPermission } from './src/utils/pushNotificationUtils'
+import { getLocation, requestUserPermission, setupNotificationListeners } from './src/utils/pushNotificationUtils'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import SplashScreen from './src/screens/SplashScreen'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -13,7 +13,8 @@ import { apiRequest } from './src/utils/api'; // ✅ Ensure you import apiReques
 import ReactNativeBlobUtil from 'react-native-blob-util';
 import hotUpdate from 'react-native-ota-hot-update';
 import DeviceInfo from 'react-native-device-info'
-
+import messaging from '@react-native-firebase/messaging';
+import notifee, { AndroidImportance, EventType } from '@notifee/react-native';
 const App = () => {
   const [username, setUserName] = useState('');
   const [userId, setUserId] = useState('');
@@ -64,9 +65,10 @@ const App = () => {
     if (!__DEV__) {
       console.log = () => { };
     }
-    requestLocationPermission();
+
     requestUserPermission();
-    NotificationListener();
+    getLocation();
+
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
     fetchUserData();
   }, [fetchUserData]);
@@ -85,10 +87,14 @@ const App = () => {
   const [updateUrl, setUpdateUrl] = useState(null);
 
   useEffect(() => {
+    messaging().getAPNSToken().then(token => {
+      console.log("🔐 APNs token:", token);
+    });
+
     const checkVersion = async () => {
       try {
         setChecking(true);
-         const version = DeviceInfo.getVersion();
+        const version = DeviceInfo.getVersion();
         setCurrentVersion(version);
 
         const res = await fetch('https://app.seeb.in/seeb/update.json');
@@ -101,7 +107,7 @@ const App = () => {
 
         setRemoteVersion(data.version);
 
-        if (data.version > localVersion) {
+        if (data.version > version) {
           setUpdateUrl(url);
           setShowUpdateModal(true); // show modal or button
         }
@@ -131,6 +137,34 @@ const App = () => {
       Alert.alert('Error', 'Update failed. Please try again.');
     }
   };
+
+  useEffect(() => {
+    const clearBadgeAndMarkRead = async () => {
+      try {
+        await notifee.setBadgeCount(0); // ✅ Clear iOS badge
+        if (userId) {
+          await apiRequest('POST', 'notifications/mark-all-read', {
+            user_type: 'customer',
+            user_id: userId,
+          });
+        }
+      } catch (err) {
+        console.error('🔥 Failed to mark notifications as read or clear badge:', err);
+      }
+    };
+
+    const handleAppStateChange = (state) => {
+      if (state === 'active') {
+        clearBadgeAndMarkRead();
+      }
+    };
+
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+
+    return () => {
+      subscription.remove(); // ✅ Correct cleanup in newer React Native
+    };
+  }, [userId]);
   return (
     <>
       {loading ? <SplashScreen /> :
@@ -153,7 +187,9 @@ const App = () => {
               setIsLoggedIn, mobileNo, setMobileNo, cart, setCart
             }}>
               <CartContext.Provider value={{ cart, setCart, updateCart }}>
-                <AppNavigater screenName={screenName} />
+                <AppNavigater onReady={(navigationRef) => {
+                  setupNotificationListeners(navigationRef);
+                }} screenName={screenName} />
                 <Toast />
                 <Modal visible={showUpdateModal} transparent animationType="slide">
                   <View style={styles.modalBackdrop}>

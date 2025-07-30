@@ -3,24 +3,17 @@ require Pod::Executable.execute_command('node', ['-p',
   __dir__
 ]).strip
 
-platform :ios, min_ios_version_supported
+platform :ios, '15.1' # ✅ Set minimum iOS version (adjust as needed)
 
 prepare_react_native_project!
-
-# Optional: react-native-permissions
-permissions_setup = '../node_modules/react-native-permissions/scripts/setup.rb'
-require permissions_setup if File.exist?(permissions_setup)
-
-setup_permissions([
-  'LocationAccuracy',
-  'LocationWhenInUse',
-])
 
 use_frameworks! :linkage => :static
 
 target 'seeb' do
-  $RNFirebaseAsStaticFramework = true
   config = use_native_modules!
+
+  # ✅ Firebase support with static framework
+  $RNFirebaseAsStaticFramework = true
 
   use_react_native!(
     :path => config[:reactNativePath],
@@ -29,11 +22,18 @@ target 'seeb' do
     :fabric_enabled => false
   )
 
+  # ✅ Notifee & Firebase post-install tweaks
   post_install do |installer|
     react_native_post_install(
       installer,
       config[:reactNativePath],
       :mac_catalyst_enabled => false
     )
+
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
+      end
+    end
   end
 end

@@ -9,6 +9,9 @@ import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { save } from '../../utils/storage';
 import { UserContext } from '../../hooks/context/UserContext';
+import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field';
+import TermsAndConditionsModal from '../../component/model/TermsAndConditionsModal';
+import PrivacyPolicyModal from '../../component/model/PrivacyPolicyModal';
 
 const OTPVerification = ({ navigation, route }) => {
   const [otp, setOtp] = useState('');
@@ -16,6 +19,14 @@ const OTPVerification = ({ navigation, route }) => {
   const [secondsRemaining, setSecondsRemaining] = useState(30);
   const [timerActive, setTimerActive] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [termsVisible, setTermsVisible] = useState(false);
+  const [privacyVisible, setPrivacyVisible] = useState(false);
+
+  const CELL_COUNT = 4;
+  const [value, setValue] = useState('');
+  const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
+  const [props, getCellOnLayoutHandler] = useClearByFocusCell({ value, setValue });
+
 
   const user = useContext(UserContext)
 
@@ -53,6 +64,7 @@ const OTPVerification = ({ navigation, route }) => {
   };
 
   const handleSubmit = useCallback(async (otp) => {
+    // navigation.navigate('Step1PersonalInfo', { user: { phone } });
     setLoading(true);
 
     if (otp.length !== 4) {
@@ -62,11 +74,13 @@ const OTPVerification = ({ navigation, route }) => {
     }
 
     try {
-      const response = await apiRequest('POST', 'customer/login', { mobile_no: phone, otp });
+      const token = await AsyncStorage.getItem('fcmtoken') ?? null;
+      const response = await apiRequest('POST', 'customer/login', { mobile_no: phone, otp, fcm_token: token });
 
       if (response.status === 200) {
         showToast('success', 'OTP verified successfully!');
         const userData = response?.user;
+        console.log('User Data:', userData);
 
         // Check if name or email is missing
         if (!userData?.name || !userData?.email) {
@@ -140,8 +154,10 @@ const OTPVerification = ({ navigation, route }) => {
           >
 
             <Image source={require('../../asset/logofull.png')} style={styles.logo} />
+            <Text style={styles.heading}>Welcome to Seeb</Text>
+            <Text style={styles.subheading}>India’s First AI Interior Platform</Text>
 
-            <Text style={styles.title}>Enter OTP</Text>
+
             <Text style={styles.subtitle}>We've sent a 4-digit code to your mobile number.</Text>
 
             <View style={styles.phoneContainer}>
@@ -149,12 +165,39 @@ const OTPVerification = ({ navigation, route }) => {
               <Icon name="edit" size={20} color="#00E676" style={styles.editIcon} onPress={() => navigation.goBack()} />
             </View>
 
-            <OTPTextInput
+            <Text style={styles.title}>Enter OTP</Text>
+            {/* <OTPTextInput
               handleTextChange={handleOtp}
               inputCount={4}
               tintColor="#00E676"
               textInputStyle={styles.otpBox}
+            /> */}
+            <CodeField
+              ref={ref}
+              {...props}
+              value={value}
+              onChangeText={(text) => {
+                setValue(text);
+                if (text.length === 4) {
+                  handleSubmit(text);
+                }
+              }}
+              autoFocus
+              cellCount={CELL_COUNT}
+              rootStyle={styles.codeFieldRoot}
+              keyboardType="number-pad"
+              textContentType="oneTimeCode"
+              renderCell={({ index, symbol, isFocused }) => (
+                <Text
+                  key={index}
+                  style={[styles.cell, isFocused && styles.focusCell]}
+                  onLayout={getCellOnLayoutHandler(index)}
+                >
+                  {symbol || (isFocused ? <Cursor /> : null)}
+                </Text>
+              )}
             />
+
 
             <TouchableOpacity style={styles.button} onPress={() => handleSubmit(otp)} disabled={loading}>
               {loading ? (
@@ -165,14 +208,29 @@ const OTPVerification = ({ navigation, route }) => {
             </TouchableOpacity>
 
             {timerActive ? (
-              <Text style={styles.timerText}>Resend OTP in {secondsRemaining}s</Text>
+              <Text style={timerActive ? styles.timerText : styles.hidden}>
+                Didn’t receive OTP? Resend in {secondsRemaining}s
+              </Text>
             ) : (
               <TouchableOpacity onPress={resendOtp}>
                 <Text style={styles.resendText}>Resend Code</Text>
               </TouchableOpacity>
             )}
+            <Text style={styles.termsText}>
+              By continuing, you agree to our{' '}
+              <Text style={styles.linkText} onPress={() => setTermsVisible(true)}>
+                Terms of Service
+              </Text>{' '}
+              and{' '}
+              <Text style={styles.linkText} onPress={() => setPrivacyVisible(true)}>
+                Privacy Policy
+              </Text>.
+            </Text>
+            <TermsAndConditionsModal visible={termsVisible} onClose={() => setTermsVisible(false)} />
+            <PrivacyPolicyModal visible={privacyVisible} onClose={() => setPrivacyVisible(false)} />
+
+
           </ScrollView>
-          {/* <Toast /> */}
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </LinearGradient>
@@ -198,23 +256,37 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   logo: {
-    width: width * 0.5,
-    height: width * 0.5,
+    width: width * 0.4,
+    height: width * 0.4,
     alignSelf: 'center',
     marginBottom: 20,
   },
-  title: {
+  heading: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#ffffff',
+    textAlign: 'center',
+  },
+  subheading: {
+    fontSize: 14,
+    color: '#cccccc',
     textAlign: 'center',
     marginBottom: 10,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
+    // textAlign: 'center',
+    marginBottom: 4,
   },
   subtitle: {
     fontSize: 14,
     color: '#bbb',
-    marginBottom: 20,
+    marginBottom: 4,
     textAlign: 'center',
+    marginTop: 10,
+
   },
   phoneContainer: {
     flexDirection: 'row',
@@ -230,12 +302,26 @@ const styles = StyleSheet.create({
   editIcon: {
     marginLeft: 5,
   },
+  // otpBox: {
+  //   borderBottomWidth: 2,
+  //   borderColor: '#00E676',
+  //   color: '#fff',
+  //   fontSize: 20,
+  // },
   otpBox: {
-    borderBottomWidth: 2,
+    borderWidth: 2,
+    borderRadius: 10,
     borderColor: '#00E676',
     color: '#fff',
-    fontSize: 20,
+    fontSize: 18,
+    padding: 10,
+    width: 50,
+    height: 55,
+    textAlign: 'center',
+    marginHorizontal: 5,
+    backgroundColor: '#1C2833',
   },
+
   button: {
     backgroundColor: '#00E676',
     paddingVertical: 12,
@@ -262,6 +348,41 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     textAlign: 'center'
   },
+  hidden: {
+    height: 0,
+    opacity: 0,
+  },
+
+  cell: {
+    width: 55,
+    height: 55,
+    lineHeight: 55,
+    fontSize: 20,
+    borderWidth: 2,
+    borderColor: '#00E676',
+    textAlign: 'center',
+    borderRadius: 10,
+    backgroundColor: '#1C2833',
+    color: '#fff',
+    marginHorizontal: 5,
+  },
+  focusCell: {
+    borderColor: '#FFD700',
+  },
+  termsText: {
+    fontSize: 12,
+    color: '#bbb',
+    textAlign: 'center',
+    marginTop: 20,
+    lineHeight: 18,
+  },
+
+  linkText: {
+    color: '#00E676',
+    textDecorationLine: 'underline',
+  },
+
+
 });
 
 export default OTPVerification;

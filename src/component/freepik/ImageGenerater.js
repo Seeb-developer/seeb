@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import RNFS from 'react-native-fs';
 import CameraRoll from '@react-native-camera-roll/camera-roll';
 import { Platform, Alert, PermissionsAndroid } from 'react-native';
+import { downloadImageUrl } from '../../utils/api';
 
 const ImageGenerater = ({ images, generateImage, loading, saveData, executionData, setIsViewerVisible, setSelectedImage, setIndex }) => {
    const navigation = useNavigation();
@@ -89,7 +90,7 @@ const ImageGenerater = ({ images, generateImage, loading, saveData, executionDat
                             {/* Download Button */}
                             <TouchableOpacity
                                 style={styles.downloadButton}
-                                onPress={() => downloadImage(item.url)}>
+                                onPress={() => downloadImageUrl(item.url)}>
                                 <Ionicons name="cloud-download-outline" size={25} color="#fff" />
                             </TouchableOpacity>
                         </View>

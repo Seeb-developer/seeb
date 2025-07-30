@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "700320378270",
+    "firebase_url": "https://seeb-e3cea-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "seeb-e3cea",
+    "storage_bucket": "seeb-e3cea.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:700320378270:android:73a30d83007ed2b0ce7a8f",
+        "android_client_info": {
+          "package_name": "com.seeb.design"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9IyKH1TxtxyImyUSbdswbJ9u5TMM1X8A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 15,
         borderTopRightRadius: 15,
         padding: 20,
-        maxHeight: "90%",
+        maxHeight: "88%",
         elevation: 10,
     },
     header: {

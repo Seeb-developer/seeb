@@ -26,10 +26,10 @@ import OpenAIIntegration from "../screens/OpenAIIntegration";
 import DesignDetailsScreen from "../screens/DesignDetailsScreen";
 import ProfileSettings from "../screens/account/ProfileSettings";
 import PoliciesLegal from "../screens/account/PoliciesLegal";
-import SupportContact from "../screens/account/SupportContact";
-import RaiseTicket from "../screens/account/RaiseTicket";
-import TicketDetails from "../screens/account/TicketDetails";
-import ChatTicket from "../screens/account/ChatTicket";
+import SupportContact from "../screens/support/SupportContact";
+import RaiseTicket from "../screens/support/RaiseTicket";
+import TicketDetails from "../screens/support/TicketDetails";
+import ChatTicket from "../screens/support/ChatTicket";
 import FloorPlanCanvas from "../screens/floorplan/FloorPlanCanvas";
 import FloorPlan from "../screens/floorplan/FloorPlan";
 import ElementsDesign from "../screens/floorplan/ElementsDesign";
@@ -37,12 +37,30 @@ import GeminiAi from "../screens/floorplan/GeminiAi";
 import RoomSelectionScreen from "../screens/RoomSelectionScreen";
 import SavedFloorPlans from "../screens/account/SavedFloorPlans";
 import SavedFloorPlanDetails from "../screens/account/SavedFloorPlanDetails";
+import React from "react";
+import BookingSupportReasonScreen from "../screens/support/BookingSupportReasonScreen";
+import PreviousTicketsScreen from "../screens/support/PreviousTicketsScreen";
+import PreviousBookingsScreen from "../screens/support/PreviousBookingsScreen";
+import HelpFAQList from "../screens/support/HelpFAQList";
+import ReferAndEarnScreen from "../screens/account/ReferAndEarnScreen";
+import Step1PersonalInfo from "../screens/auth/Step1PersonalInfo";
+import Step2LocationPreferences from "../screens/auth/Step2LocationPreferences";
+import DashboardScreen from "../screens/DashboardScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 export const AppNavigater = (props) => {
+
+    const navigationRef = React.useRef();
     return (
-        <NavigationContainer>
+        <NavigationContainer
+            ref={navigationRef}
+            onReady={() => {
+                if (props.onReady) {
+                    props.onReady(navigationRef.current);
+                }
+            }}
+        >
             <Stack.Navigator initialRouteName={props.screenName}
                 options={{
                     swipeEnabled: false,
@@ -63,6 +81,9 @@ export const AppNavigater = (props) => {
                 <Stack.Screen name='Login' component={MobileNumber} />
                 <Stack.Screen name='OTPVerification' component={OTPVerification} />
                 <Stack.Screen name='NameEmailScreen' component={NameEmailScreen} />
+                <Stack.Screen name="Step1PersonalInfo" component={Step1PersonalInfo} />
+                <Stack.Screen name="Step2LocationPreferences" component={Step2LocationPreferences} />
+                <Stack.Screen name="DashboardScreen" component={DashboardScreen} />
                 <Stack.Screen name='BookingScreen' component={BookingScreen} />
                 <Stack.Screen name='Services' component={Services} />
                 <Stack.Screen name='ServiceDetail' component={ServiceDetail} />
@@ -85,6 +106,12 @@ export const AppNavigater = (props) => {
                 <Stack.Screen name="Bookings" component={Bookings} />
                 <Stack.Screen name="SavedFloorPlans" component={SavedFloorPlans} />
                 <Stack.Screen name="SavedFloorPlanDetails" component={SavedFloorPlanDetails} />
+                <Stack.Screen name="BookingSupportReasonScreen" component={BookingSupportReasonScreen} />
+                <Stack.Screen name="PreviousTickets" component={PreviousTicketsScreen} />
+                <Stack.Screen name="PreviousBookings" component={PreviousBookingsScreen} />
+                <Stack.Screen name="HelpFAQList" component={HelpFAQList} />
+                <Stack.Screen name="ReferEarn" component={ReferAndEarnScreen} />
+
             </Stack.Navigator>
         </NavigationContainer>
     )

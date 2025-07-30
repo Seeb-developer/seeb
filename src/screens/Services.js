@@ -35,11 +35,11 @@ const Services = ({ route }) => {
             if (result.status === 200) {
                 setServicesData(result.data);
             } else {
-                Alert.alert("Error", result.message || "Failed to fetch services.");
+                // Alert.alert("Error", result.message || "Failed to fetch services.");
             }
         } catch (error) {
             console.error("Error fetching services:", error);
-            Alert.alert("Error", "Something went wrong while fetching data.");
+            // Alert.alert("Error", "Something went wrong while fetching data.");
         } finally {
             setLoading(false);
         }

@@ -39,7 +39,7 @@ const Profile = () => {
         // { title: 'Projects', icon: 'layout', navigateTo: 'Projects' },
         { title: 'Profile Settings', icon: 'user', navigateTo: 'ProfileSettings' },
         { title: 'Refer & Earn', icon: 'gift', navigateTo: 'ReferEarn' },
-        { title: 'Support & Contact Us', icon: 'headphones', navigateTo: 'SupportContact' },
+        { title: 'Help & Support', icon: 'headphones', navigateTo: 'SupportContact' },
         // { title: 'FAQ', icon: 'help-circle', navigateTo: 'FAQ' },
         { title: 'Terms & Policies', icon: 'file-text', navigateTo: 'PoliciesLegal' },
     ];

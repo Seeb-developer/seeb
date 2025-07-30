@@ -307,7 +307,7 @@ const ElementsDesign = ({ route, navigation }) => {
             const res = await apiRequest('POST', '/floor-plans', {
                 user_id: userId,
                 room_name: name,
-                room_size: `${width}x${height} ft`,
+                room_size: `${width}x${height}`,
                 name: designInstruction ?? `${name} Design`,
                 primary_color: primaryColor,
                 accent_color: accentColor,

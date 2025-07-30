@@ -1,14 +1,14 @@
 {
   "project_info": {
-    "project_number": "700320378270",
-    "firebase_url": "https://seeb-e3cea-default-rtdb.asia-southeast1.firebasedatabase.app",
-    "project_id": "seeb-e3cea",
-    "storage_bucket": "seeb-e3cea.firebasestorage.app"
+    "project_number": "835008801894",
+    "firebase_url": "https://seeb-partner-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "seeb-partner",
+    "storage_bucket": "seeb-partner.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:700320378270:android:73a30d83007ed2b0ce7a8f",
+        "mobilesdk_app_id": "1:835008801894:android:8fd6b66adca9dfd02391a7",
         "android_client_info": {
           "package_name": "com.seeb.design"
         }
@@ -16,7 +16,26 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyC9IyKH1TxtxyImyUSbdswbJ9u5TMM1X8A"
+          "current_key": "AIzaSyDr9I9o-huS4D0BzJHzx6aNRpubEDXigQQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:835008801894:android:70e46c5e6f388db92391a7",
+        "android_client_info": {
+          "package_name": "com.seebpartner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDr9I9o-huS4D0BzJHzx6aNRpubEDXigQQ"
         }
       ],
       "services": {

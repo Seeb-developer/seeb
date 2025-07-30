@@ -18,11 +18,15 @@ import LinearGradient from 'react-native-linear-gradient';
 import { width } from '../../utils/constent';
 import { apiRequest } from '../../utils/api';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import TermsAndConditionsModal from '../../component/model/TermsAndConditionsModal';
+import PrivacyPolicyModal from '../../component/model/PrivacyPolicyModal';
 
 const MobileNumber = ({ navigation }) => {
   const [phone, setPhone] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [termsVisible, setTermsVisible] = useState(false);
+  const [privacyVisible, setPrivacyVisible] = useState(false);
 
   const isValidPhone = () => /^[6-9]\d{9}$/.test(phone);
 
@@ -54,7 +58,7 @@ const MobileNumber = ({ navigation }) => {
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+        // keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <ScrollView
@@ -63,6 +67,9 @@ const MobileNumber = ({ navigation }) => {
             showsVerticalScrollIndicator={false}
           >
             <Image source={require('../../asset/logofull.png')} style={styles.logo} />
+
+            <Text style={styles.heading}>Welcome to Seeb</Text>
+            <Text style={styles.subheading}>India’s First AI Interior Platform</Text>
 
             <Text style={styles.title}>Enter Your Mobile Number</Text>
 
@@ -95,6 +102,19 @@ const MobileNumber = ({ navigation }) => {
                 <Text style={styles.buttonText}>Continue</Text>
               )}
             </TouchableOpacity>
+            <Text style={styles.termsText}>
+              By continuing, you agree to our{' '}
+              <Text style={styles.linkText} onPress={() => setTermsVisible(true)}>
+                Terms of Service
+              </Text>{' '}
+              and{' '}
+              <Text style={styles.linkText} onPress={() => setPrivacyVisible(true)}>
+                Privacy Policy
+              </Text>.
+            </Text>
+            <TermsAndConditionsModal visible={termsVisible} onClose={() => setTermsVisible(false)} />
+            <PrivacyPolicyModal visible={privacyVisible} onClose={() => setPrivacyVisible(false)} />
+
           </ScrollView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
@@ -108,7 +128,7 @@ const styles = StyleSheet.create({
   },
   flex: {
     flex: 1,
-    justifyContent:"center"
+    justifyContent: "center"
   },
   container: {
     flexGrow: 1,
@@ -117,17 +137,31 @@ const styles = StyleSheet.create({
     // paddingBottom: 40,
   },
   logo: {
-    width: width * 0.5,
-    height: width * 0.5,
+    width: width * 0.4,
+    height: width * 0.4,
     alignSelf: 'center',
     marginBottom: 20,
   },
   title: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#fff',
-    marginVertical: 20,
+    marginTop: 20,
+    marginBottom: 10,
     // textAlign: 'center',
+  },
+  heading: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    textAlign: 'center',
+  },
+
+  subheading: {
+    fontSize: 14,
+    color: '#cccccc',
+    textAlign: 'center',
+    marginTop: 5,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -172,6 +206,18 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginBottom: 5,
   },
+  termsText: {
+  fontSize: 12,
+  color: '#bbb',
+  textAlign: 'center',
+  marginTop: 15,
+  lineHeight: 18,
+},
+linkText: {
+  color: '#00E676',
+  textDecorationLine: 'underline',
+},
+
 });
 
 export default MobileNumber;
